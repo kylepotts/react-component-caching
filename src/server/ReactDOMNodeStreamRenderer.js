@@ -51,7 +51,7 @@ function createCacheStream(cache, streamingStart, memLife = 0) {
     flush(cb) {
       // We concatenate all the buffered chunks of HTML to get the full HTML, then cache it at "key"
       let html = bufferedChunks.join("");
-      delete streamingStart.sliceStartCount; 
+      delete streamingStart.sliceStartCount;
 
       for (let component in streamingStart) {
         let tagStack = [];
@@ -65,7 +65,7 @@ function createCacheStream(cache, streamingStart, memLife = 0) {
             tagStart = (html[tagEnd] === '<') ? tagEnd : html.indexOf('<', tagEnd);
           }
           tagEnd = html.indexOf('>', tagStart) + 1;
-          // Skip stack logic for void/self-closing elements and HTML comments 
+          // Skip stack logic for void/self-closing elements and HTML comments
           if (html[tagEnd - 2] !== '/' && html[tagStart + 1] !== '!') {
             // Push opening tags onto stack; pop closing tags off of stack
             if (html[tagStart + 1] !== '/') {
@@ -99,15 +99,10 @@ function originalRenderToNodeStream(element, cache, streamingStart, memLife=0) {
   return new ReactMarkupReadableStream(element, false, cache, streamingStart, memLife);
 }
 
-export function renderToNodeStream(element, cache, res) {
-
-  const htmlStart =
-  '<html><head><title>Page</title></head><body><div id="react-root">';
-
-  const htmlEnd = '</div></body></html>';
+export function renderToNodeStream(element, cache, res, htmlStart, htmlEnd) {
 
   const streamingStart = {
-    sliceStartCount: htmlStart.length, 
+    sliceStartCount: htmlStart.length,
   };
 
   const cacheStream = createCacheStream(cache, streamingStart);
@@ -138,7 +133,7 @@ export function renderToStaticNodeStream(element, cache, res) {
   const htmlEnd = '</div></body></html>';
 
   const streamingStart = {
-    sliceStartCount: htmlStart.length, 
+    sliceStartCount: htmlStart.length,
   };
 
   const cacheStream = createCacheStream(cache, streamingStart);
